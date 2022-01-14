@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script src="./z.js"></script>
+
+    <!-- <script src="./myown.js"></script> -->
+    <!--  -->
+  </head>
+  <body>
+    <script>
+      window.yobject = {
+        myWorker: null,
+        myWorkerOnmessageAppend: null,
+        testFn: null,
+      };
+      if (window.Worker) {
+        window.yobject.myWorker = function() {
+          var myWorker = new Worker("z.js");
+          return myWorker;
+        }();
+        window.yobject.myWorkerOnmessageAppend = function(fn) {
+          console.log('JS::myWorkerOnmessageAppend: called.');
+          window.yobject.myWorker.onmessage = function(e) {
+            fn(e);
+            console.log('JS::Message received from worker');
+          };
+        };
+      }
+    </script>
+  </body>
+</html>
