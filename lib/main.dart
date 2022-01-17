@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '/isorate/my_isorate.dart';
-import '/utility.dart' as util;
 
 void main() {
   runApp(const MyApp());
@@ -61,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "v2": num,
     };
     MyWorker w = MyWorker();
-    w.postMessage(util.mapToJSObject(argsMap));
+    w.postMessage(argsMap);
   }
 
   void _incrementCounter() {

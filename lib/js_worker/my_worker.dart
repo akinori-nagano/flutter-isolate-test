@@ -1,12 +1,14 @@
 import 'dart:js' as js;
 import './my_worker_window_api.dart';
 import '/isorate/my_isorate_task.dart';
+import '/utility.dart' as util;
 
 MyWorkerTask myWorkerTask = new MyWorkerTask();
 
 main() {
   /*
    * mapobj = {
+   *   number: 1, // unique number
    *   v1: 1, // int
    *   v2: 2, // int
    * }
@@ -17,10 +19,14 @@ main() {
     print(mapobj);
 
     var res = myWorkerTask.multiply(mapobj['v1'], mapobj['v2']);
-    var workerResult = 'Worker::result:send: ' + res;
+    var workerResult = {
+      'number': mapobj['number'],
+      'result': 'Worker::result:send: ' + res,
+    };
     print('Worker::postMessage: send start.');
-    myPostMessage(workerResult);
+    myPostMessage(util.mapToJSObject(workerResult));
     print('Worker::postMessage: send end.');
   }
+
   js.context['onmessage'] = onmessage;
 }
