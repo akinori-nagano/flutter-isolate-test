@@ -7,9 +7,8 @@ class MyWorker {
   postMessage(v) {
     if (atOnce) {
       atOnce == false;
-      print('DART::check onmessage');
-      print(onmessage);
-      windowApi.myWorkerOnmessageAppend(allowInterop(onmessage));
+      print('DART::postMessage: register onmessage function.');
+      windowApi.myWorkerOnmessageAppend(allowInterop(_onmessage));
     }
     if (windowApi.myWorkerPostMessage != null) {
       print('DART::postMessage: send start.');
@@ -18,7 +17,7 @@ class MyWorker {
     }
   }
 
-  onmessage(e) {
+  _onmessage(e) {
     var result = e.data;
     print('DART: Message received from worker');
     print(result);
