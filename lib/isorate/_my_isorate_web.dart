@@ -6,7 +6,7 @@ import 'isorate_web_queue.dart';
 bool atOnce = true;
 
 class MyWorker {
-  postMessage(v) {
+  Future<dynamic> postMessage(v) {
     if (atOnce) {
       // 最初の1度だけ実行する
       atOnce == false;
@@ -14,23 +14,28 @@ class MyWorker {
       windowApi.myWorkerOnmessageAppend(allowInterop(_onmessage));
     }
 
-    if (windowApi.myWorkerPostMessage != null) {
-      print('DART::postMessage: send start.');
-      {
-        // 自作の疑似Queueに追加
-        var queData = appendIsorateWebQueue<String>();
-
-        v['number'] = queData.number;
-        windowApi.myWorkerPostMessage(util.mapToJSObject(v));
-
-        // TODO futureテスト、実際には上位に伝搬する
-        queData.completer.future.then((value) {
-          print('DART::postMessage: future result.');
-          print(value);
-        });
-      }
-      print('DART::postMessage: send end.');
+    if (windowApi.myWorkerPostMessage == null) {
+      return Future.error('FooError');
     }
+
+    print('DART::postMessage: send start.');
+
+    // 自作の疑似Queueに追加
+    var queData = appendIsorateWebQueue<String>();
+
+    v['number'] = queData.number;
+    windowApi.myWorkerPostMessage(util.mapToJSObject(v));
+
+/*
+    // TODO futureテスト
+    queData.completer.future.then((value) {
+      print('DART::postMessage: future result.');
+      print(value);
+    });
+*/
+
+    print('DART::postMessage: send end.');
+    return queData.completer.future;
   }
 
   _onmessage(e) {
