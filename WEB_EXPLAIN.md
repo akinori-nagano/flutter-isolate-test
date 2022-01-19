@@ -1,6 +1,6 @@
 # Webの別スレッド処理に関する実装の説明
 
-フォアグラウンドからバックグラウンドへ通知、および結果を得ている
+フォアグラウンドからバックグラウンドへ通知、および結果を得ている  
 
 ## Dart側の世界
 
@@ -20,9 +20,8 @@ print(response);
 
 ### MyWorker class (./lib/isorate/_my_isorate_web.dart)
 
-DartとJavascriptの間でオブジェクトを渡す場合、構造の変更などが必要
-
-Completerを使ってFutureオブジェクトを生成している(./lib/isorate/isorate_web_queue.dart)
+DartとJavascriptの間でオブジェクトを渡す場合、構造の変更などが必要  
+Completerを使ってFutureオブジェクトを生成している(./lib/isorate/isorate_web_queue.dart)  
 
 ```
 import '/window_api.dart' as windowApi;
@@ -37,9 +36,8 @@ windowApi.myWorkerPostMessage(util.mapToJSObject(v));
 
 ### Dart to Javascript (./lib/window_api.dart)
 
-Javascriptのオブジェクトを呼ぶ
-
-@JSアノテーションと次の行のexternalにより、Javascript側のオブジェクトを操作可能となる
+Javascriptのオブジェクトを呼ぶ  
+@JSアノテーションと次の行のexternalにより、Javascript側のオブジェクトを操作可能となる  
 
 ```
 import 'package:js/js.dart';
@@ -57,9 +55,8 @@ external Function? myWorkerOnmessageAppend(Function fn);
 
 ### Javascript Worker(./web/index.html)
 
-window.yobject.myWorkerはWorkerオブジェクト
-
-window.yobject.myWorkerOnmessageAppendは、Worker::onmessageのコールバックが呼ばれた時に呼び出す関数を登録するための関数
+window.yobject.myWorkerはWorkerオブジェクト  
+window.yobject.myWorkerOnmessageAppendは、Worker::onmessageのコールバックが呼ばれた時に呼び出す関数を登録するための関数  
 
 ```
 <script>
@@ -85,18 +82,11 @@ window.yobject.myWorkerOnmessageAppendは、Worker::onmessageのコールバッ�
 
 ### Javascript Worker Task(my_worker.js)
 
-src/js_worker/my_worker.dartをdart2jsを使ってトランスパイルしてmy_worker.jsを作成している
+src/js_worker/my_worker.dartをdart2jsを使ってトランスパイルしてmy_worker.jsを作成している  
+my_worker.jsにはonmessage関数が定義される必要がある  
+この関数は、Worker::postMessage呼び出し時に別スレッドで呼び出されて実行される  
+なので、この関数内に時間のかかる重い処理を書くことになる  
+本サンプルでは、MyWorkerTask::multiply(./lib/isorate/my_isorate_task.dart)が重い処理に当たる  
 
-my_worker.jsにはonmessage関数が定義される必要がある
-
-この関数は、Worker::postMessage呼び出し時に別スレッドで呼び出されて実行される
-
-なので、この関数内に時間のかかる重い処理を書くことになる
-
-本サンプルでは、MyWorkerTask::multiply(./lib/isorate/my_isorate_task.dart)が重い処理に当たる
-
-
-
-フォアグラウンドへの通知にはpostMessageを使う
-
-ここでも@JSアノテーションとexternalを用いてオブジェクトを操作している(lib/js_worker/my_worker_window_api.dart)
+フォアグラウンドへの通知にはpostMessageを使う  
+ここでも@JSアノテーションとexternalを用いてオブジェクトを操作している(lib/js_worker/my_worker_window_api.dart)  
