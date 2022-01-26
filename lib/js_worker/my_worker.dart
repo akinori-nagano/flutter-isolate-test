@@ -1,4 +1,6 @@
 import 'dart:js' as js;
+import 'package:flutter/material.dart';
+
 import './my_worker_window_api.dart';
 import '/isorate/my_isorate_task.dart';
 import '/utility.dart' as util;
@@ -15,17 +17,17 @@ main() {
    */
   void onmessage(event) {
     var mapobj = event.data;
-    print('Worker: Message received from main script');
-    print(mapobj);
+    debugPrint('Worker: Message received from main script');
+    debugPrint(mapobj);
 
     var res = myWorkerTask.multiply(mapobj['v1'], mapobj['v2']);
     var workerResult = {
       'number': mapobj['number'],
       'result': 'Worker::result:send: ' + res,
     };
-    print('Worker::postMessage: send start.');
+    debugPrint('Worker::postMessage: send start.');
     myPostMessage(util.mapToJSObject(workerResult));
-    print('Worker::postMessage: send end.');
+    debugPrint('Worker::postMessage: send end.');
   }
 
   js.context['onmessage'] = onmessage;

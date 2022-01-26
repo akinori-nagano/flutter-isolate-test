@@ -46,15 +46,15 @@ class _MyHomePageState extends State<MyHomePage> {
    * バックグラウンドで処理する関数
    */
   void _calcBackground(BuildContext context, int num) async {
-    final Map<String, int> argsMap = {
+    final Map argsMap = {
       "v1": 3,
       "v2": num,
     };
     MyWorker w = MyWorker();
-    print('Send request !');
+    debugPrint('Send request !');
     final response = await w.postMessage(argsMap);
-    print('get one');
-    print(response);
+    debugPrint('get one');
+    debugPrint(response);
 
     refMessage.watch(messageProvider.state).state = response;
   }
